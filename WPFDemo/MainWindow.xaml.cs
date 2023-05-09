@@ -235,6 +235,7 @@ namespace WPFDemo
         private void btnEq_Click(object sender, RoutedEventArgs e)
         /*
         Calculation will occur until no operators remain on operator stack.
+        Output will be final calculation
         */
         {
 
