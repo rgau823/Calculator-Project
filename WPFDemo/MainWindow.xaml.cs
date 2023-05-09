@@ -22,11 +22,10 @@ namespace WPFDemo
     public partial class MainWindow : Window
     {
 
-        double number1 = 0;
-        double number2 = 0;
+        double currNumb = 0;
         string operation = "";
         string input = "";
-        bool newNumber = false;
+        char lastPressed; //Used to check for illegal inputs (i.e. two operators in a row or an illegal combination)
         Stack<double> numbers = new Stack<double>();
         Stack<char> operators = new Stack<char>();
 
@@ -36,384 +35,229 @@ namespace WPFDemo
             operators.Push('#');
         }
 
+        //Input number buttons
+        //The numbers must grow with button inputs
+        private void inputNumb(int number) {
+            currNumb =  currNumb * 10) + number;
+        }
         private void btn1_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 1;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(1);
+            display.Text =  currNumb.ToString();
+
 
         }
 
         private void btn2_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 2;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(2);
+            display.Text =  currNumb.ToString();
 
         }
 
         private void btn3_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 3;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(3);
+            display.Text =  currNumb.ToString();
         }
 
         private void btn4_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 4;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(4);
+            display.Text =  currNumb.ToString();
         }
 
         private void btn5_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 5;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(5);
+            display.Text =  currNumb.ToString();
         }
 
         private void btn6_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 6;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(6);
+            display.Text =  currNumb.ToString();
         }
 
         private void btn7_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 7;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(7);
+            display.Text =  currNumb.ToString();
         }
 
         private void btn8_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 8;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(8);
+            display.Text =  currNumb.ToString();
         }
 
         private void btn9_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10) + 9;
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(9);
+            display.Text =  currNumb.ToString();
         }
 
         private void btn0_Click(object sender, RoutedEventArgs e)
         {
-            if (!newNumber) number1 = 0;
-            number1 = (number1 * 10);
-            display.Text = number1.ToString();
-            newNumber = true;
+            inputNumb(0);
+            display.Text =  currNumb.ToString();
+        }
+
+        private void operatorPush (char op) 
+        {
+            numbers.Push(currNumb);
+            input = input + currNumb.ToString() + op;
+            operators.Push(op);
+            display.Text = "0";
+
+            history.Text = input;
         }
 
         private void btnPlus_Click(object sender, RoutedEventArgs e)
         {
-            if (newNumber)
-            {
-                numbers.Push(number1);
-                input = input + number1.ToString() + "+";
-            }
-            else
-            {
-                input = input + "+";
-            }
-            
-
-            while (operators.Peek() == '*' || operators.Peek() == '/' || operators.Peek() == '^')
-            {
-                if (operators.Peek() == '*')
-                {
-                    number1 = numbers.Pop();
-                    number2 = numbers.Pop();
-                    numbers.Push(number1 * number2);
-                    Console.WriteLine(numbers.Peek());
-                    operators.Pop();
-                }
-                else if (operators.Peek() == '/')
-                {
-                    number1 = numbers.Pop();
-                    number2 = numbers.Pop();
-                    numbers.Push(number1 / number2);
-                    Console.WriteLine(numbers.Peek());
-                    operators.Pop();
-                }
-                else
-                {
-                    number1 = numbers.Pop();
-                    number2 = numbers.Pop();
-                    numbers.Push(Math.Pow(number2, number1));
-                }
-            }
-            operators.Push('+');
-            display.Text = "0";
-            newNumber = false;
-            history.Text = input;
+            System.Console.WriteLine("Hello world!");
+            operatorPush('+');
         }
 
         private void btnMinus_Click(object sender, RoutedEventArgs e)
         {
-            if (newNumber)
-            {
-                numbers.Push(number1);
-                input = input + number1.ToString() + "-";
-            }
-            else
-            {
-                input = input + "-";
-            }
-
-            while (operators.Peek() == '*' || operators.Peek() == '/' || operators.Peek() == '^')
-            {
-                if (operators.Peek() == '*')
-                {
-                    number1 = numbers.Pop();
-                    number2 = numbers.Pop();
-                    numbers.Push(number1 * number2);
-                    Console.WriteLine(numbers.Peek());
-                    operators.Pop();
-                }
-                else if (operators.Peek() == '/')
-                {
-                    number1 = numbers.Pop();
-                    number2 = numbers.Pop();
-                    numbers.Push(number1 / number2);
-                    Console.WriteLine(numbers.Peek());
-                    operators.Pop();
-                }
-                else
-                {
-                    number1 = numbers.Pop();
-                    number2 = numbers.Pop();
-                    numbers.Push(Math.Pow(number2, number1));
-                }
-            }
-            operators.Push('-');
-            display.Text = "0";
-            newNumber = false;
-            history.Text = input;
+            operatorPush('-');
         }
 
         private void btnMulti_Click(object sender, RoutedEventArgs e)
         {
-            if (newNumber)
-            {
-                numbers.Push(number1);
-                input = input + number1.ToString() + "*";
-            }
-            else
-            {
-                input = input + "*";
-            }
-
-            if (operators.Peek() == '^')
-            {
-                number1 = numbers.Pop();
-                number2 = numbers.Pop();
-                numbers.Push(Math.Pow(number2, number1));
-            }
-            operators.Push('*');
-            newNumber = false;
-            display.Text = "0";
-            history.Text = input;
+            operatorPush('*');
         }
 
         private void btnDiv_Click(object sender, RoutedEventArgs e)
         {
-            if (newNumber)
-            {
-                numbers.Push(number1);
-                input = input + number1.ToString() + "/";
-            }
-            else
-            {
-                input = input + "/";
-            }
-
-            if (operators.Peek() == '^')
-            {
-                number1 = numbers.Pop();
-                number2 = numbers.Pop();
-                numbers.Push(Math.Pow(number2, number1));
-            }
-            operators.Push('/');
-            numbers.Push(number1);
-            newNumber = false;
-            display.Text = "0";
-            history.Text = input;
+            operatorPush('/');
         }
 
         private void btnMod_Click(object sender, RoutedEventArgs e)
         {
-            if (newNumber)
-            {
-                numbers.Push(number1);
-                input = input + number1.ToString() + "%";
-            }
-            else
-            {
-                input = input + "%";
-            }
-            if (operators.Peek() == '^')
-            {
-                number1 = numbers.Pop();
-                number2 = numbers.Pop();
-                numbers.Push(Math.Pow(number2, number1));
-            }
-            operators.Push('%');
-            display.Text = "0";
-            newNumber = false;
-            history.Text = input;
+            operatorPush('%');
         }
 
         private void btnPlsNeg_Click(object sender, RoutedEventArgs e)
         {
-            number1 = (number1 * -1);
-            display.Text = number1.ToString();
-
+            currNumb *= -1;
+            display.Text = currNumb.ToString();
         }
 
         private void btnExp_Click(object sender, RoutedEventArgs e)
         {
-            if (newNumber)
+            operatorPush('^');
+        }
+
+        private void bracketCalc()
+        {
+
+        }
+
+        private void addSubCalc()
+        {
+            
+            double num1;
+            double num2;
+
+            if ((operators.Peek() == '*') || (operators.Peek() == '/')|| (operators.Peek() == '%'))
             {
-                numbers.Push(number1);
-                input = input + number1.ToString() + "^";
-            }
-            else
+                num1 = numbers.Pop();
+                multDivModCalc();
+            } 
+            else if ((operators.Peek() == '^')) 
             {
-                input = input + "^";
+                num1 = numbers.Pop();
+                expCalc();
+            } 
+            else 
+            {
+                num1 = numbers.Pop();
+                num2 = numbers.Pop();
             }
-            operators.Push('^');
-            display.Text = "0";
-            newNumber = false;
-            history.Text = input;
+            if (operators.Peek() == '+')
+            {
+                numbers.Push(num1 + num2);
+            }
+            else 
+            {
+                numbers.Push(num1 - num2);
+            }
+            
+        }
+
+        private void multDivModCalc() 
+        {
+            double num1;
+            double num2;
+            if (operators.Peek() == '^')
+            {
+                expCalc();
+            }
+            else 
+            {
+                num1 = numbers.Pop();
+                num2 = numbers.Pop();
+                if (operators.Peek() == '*')
+                {
+                    numbers.Push(num1 * num2);
+                }
+                else if (operators.Peek() == '/')
+                {
+                    numbers.Push(num1 / num2);
+                }
+                else if  (operators.Peek() == '%')
+                {
+                    numbers.Push(num1 % num2);
+                }
+            }
+        }
+
+        private void expCalc() 
+        {
+            double num1 = numbers.Pop();
+            double num2 = numbers.Pop();
+            numbers.Push(Math.Pow(num1, num2));
         }
 
         private void btnEq_Click(object sender, RoutedEventArgs e)
+        /*
+        Calculation will occur until no operators remain on operator stack.
+        */
         {
-            if (newNumber)
+            while (operators.Count > 0)
             {
-                numbers.Push(number1);
-            }
-            if(numbers.Count + 1 <= operators.Count)
-            {
-                display.Text = "Error!";
-                numbers.Clear();
-                operators.Clear();
-                number1 = 0;
-                return;
-            }
-            char op = '#';
-            while(operators.Peek() != '#')
-            {
-                op = operators.Pop();
-                number1 = numbers.Pop();
-                number2 = numbers.Pop();
-                Trace.WriteLine("New operation: ");
-                Trace.WriteLine(op);
-                Trace.WriteLine(number1.ToString());
-                Trace.WriteLine(number2.ToString());
-                
-                switch (op)
+                if (operators.Peek() == ')') 
                 {
-                    case '+':
-                        numbers.Push(number1 + number2);
-                        break;
-                    case '-':
-                        numbers.Push((-1*number1) + number2);
-                        break;
-                    case '*':
-                        numbers.Push(number1 * number2);
-                        break;
-                    case '/':
-                        numbers.Push((1/number1) * number2);
-                        break;
-                    case '^':
-                        numbers.Push(Math.Pow(number2, number1));
-                        break;
+                    bracketCalc(); 
                 }
-            }
-            if (operators.Peek() == '#' && op != '#')
-            {
+                if ((operators.Peek() == '+') ||  (operators.Peek() == '-')
+                {
+                    addSubCalc();
+                }
+                else if ((operators.Peek() == '*') || (operators.Peek() == '/') || (operators.Peek() == '%'))
+                {
+                    multDivModCalc();
+                }
+                else
+                {
+                    expCalc();
+                }
 
             }
-            if(input[input.Length - 1] != ')')
-            {
-                input = input + number1.ToString();
-            }
-            input = input + "=";
-            display.Text = numbers.Peek().ToString();
-            number1 = numbers.Pop();
-            newNumber = false;
-            history.Text = input;
-            input = "";
         }
 
         private void btnLB_Click(object sender, RoutedEventArgs e)
         {
-            
-            if (newNumber)
-            {
-                operators.Push('*');
-                numbers.Push(number1);
-                input = input + number1.ToString() + "*";
-            } 
-            input = input + "(";
             operators.Push('(');
-            newNumber = false;
-            display.Text = number1.ToString();
-            history.Text = input;
+
         }
 
         private void btnRB_Click(object sender, RoutedEventArgs e)
         {
-            numbers.Push(number1);
-            while (operators.Peek() != '(')
-            {
-                char op = operators.Pop();
-                number1 = numbers.Pop();
-                number2 = numbers.Pop();
-                Trace.WriteLine("New operation: ");
-                Trace.WriteLine(op);
-                Trace.WriteLine(number1.ToString());
-                Trace.WriteLine(number2.ToString());
-
-                switch (op)
-                {
-                    case '+':
-                        numbers.Push(number1 + number2);
-                        break;
-                    case '-':
-                        numbers.Push(number2 - number1);
-                        break;
-                    case '*':
-                        numbers.Push(number1 * number2);
-                        break;
-                    case '/':
-                        numbers.Push(number2 / number1);
-                        break;
-                    case '^':
-                        numbers.Push(Math.Pow(number2, number1));
-                        break;
-                }
-            }
-            input = input + number1.ToString()+ ")";
-            newNumber = false;
-            operators.Pop();
-            history.Text = input;
-            
+            operators.Push(')');
         }
+
     }
 }
