@@ -57,7 +57,7 @@
         <Button x:Name="btnPlsNeg" Grid.Row="7" Grid.Column="0" Click="btnPlsNeg_Click">+/-</Button>
         <Button x:Name="btnLB" Grid.Row="3" Grid.Column="0" Click="btnLB_Click">(</Button>
         <Button x:Name="btnRB" Grid.Row="3" Grid.Column="1" Click="btnRB_Click">)</Button>
-        <Button x:Name="btnPoint" Grid.Row="7" Grid.Column="2">.</Button>
+        <Button x:Name="btnPoint" Grid.Row="7" Grid.Column="2" Click="btnDecimal_Click">.</Button>
         
         <!--Display-->
         <TextBox x:Name="display" IsReadOnly="True" TextAlignment="Right" VerticalAlignment="Bottom" FontSize="30" BorderThickness="0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">0</TextBox>

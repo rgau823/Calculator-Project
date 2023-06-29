@@ -25,6 +25,8 @@ namespace WPFDemo
         double currNumb = 0;
         string input = "";
         char lastPressed = 'c'; //Used to check for illegal inputs (i.e. two operators in a row or an illegal combination)
+        bool dec = false;
+        int decPlace = 0;
 
         Stack<Stack<double>> numberStack = new Stack<Stack<double>>();
 
@@ -52,8 +54,16 @@ namespace WPFDemo
         //The numbers must grow with button inputs
         private void inputNumb(int number) 
         {
-            currNumb = (currNumb * 10) + number;
-            lastPressed = (char)number;
+            if (dec)
+            {
+                decPlace++;
+                currNumb = currNumb + (number * Math.Pow(10, decPlace * -1));
+            } 
+            else 
+            {
+                currNumb = (currNumb * 10) + number;
+                lastPressed = 'N';
+            }
         }
         
         private void btn1_Click(object sender, RoutedEventArgs e)
@@ -121,6 +131,11 @@ namespace WPFDemo
 
         private void operatorPush (char op) 
         {
+            if (dec) 
+            {
+                dec = false;
+                decPlace = 0;
+            }
             if (lastPressed != ')'){
                 numbers.Push(currNumb);
                 input = input + currNumb.ToString() + op;
@@ -212,7 +227,7 @@ namespace WPFDemo
             double num2;
             char currOp = operators.Pop();
             num1 = numbers.Pop();
-            if (operators.Peek() == '^')
+            if (currOp == '^')
             {
                 expCalc();
             }
@@ -220,17 +235,17 @@ namespace WPFDemo
             num2 = numbers.Pop();
             System.Console.WriteLine("Calculating " + num1 + " " + currOp + " " + num2);
             
-            if (currOp == '+')
+            if (currOp == '*')
             {
                 numbers.Push(num1 * num2);
             }
             else if (currOp == '/')
             {
-                numbers.Push(num1 / num2);
+                numbers.Push(num2 / num1);
             }
             else 
             {
-                numbers.Push(num1 % num2);
+                numbers.Push(num2 % num1);
             }
             System.Console.WriteLine("Result: " + numbers.Peek());
             System.Console.WriteLine("Operator: " + operators.Count());
@@ -278,6 +293,7 @@ namespace WPFDemo
             }
             currNumb = numbers.Pop();
             display.Text = currNumb.ToString();
+            lastPressed = '=';
         }
 
         private void btnLB_Click(object sender, RoutedEventArgs e)
@@ -347,8 +363,18 @@ namespace WPFDemo
 
         private void btnCE_Click(object sender, RoutedEventArgs e)
         {
-            currNumb = 0;
-            display.Text = "0";
+            if (lastPressed == 'N')
+            {
+                currNumb = 0;
+                display.Text = "0";
+            }
+        }
+
+        private void btnDecimal_Click(object sender, RoutedEventArgs e)
+        {
+            dec = true;
+            input = input + '.';
+            lastPressed = '.';
         }
 
     }
