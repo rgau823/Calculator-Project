@@ -49,8 +49,8 @@
         <Button x:Name="btnMod" Grid.Row="3" Grid.Column="2" Click="btnMod_Click">mod</Button>
         
         <!--Clear buttons-->
-        <Button x:Name="btnC" Grid.Row="2" Grid.Column="0">C</Button>
-        <Button x:Name="btnCE" Grid.Row="2" Grid.Column="1">CE</Button>
+        <Button x:Name="btnC" Grid.Row="2" Grid.Column="0" Click="btnC_Click">C</Button>
+        <Button x:Name="btnCE" Grid.Row="2" Grid.Column="1" Click="btnCE_Click">CE</Button>
         <Button x:Name="btnDel" Grid.Row="2" Grid.Column="2">Del</Button>
         
         <!--Pos/neg and brackets button-->

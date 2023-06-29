@@ -25,12 +25,27 @@ namespace WPFDemo
         double currNumb = 0;
         string input = "";
         char lastPressed = 'c'; //Used to check for illegal inputs (i.e. two operators in a row or an illegal combination)
-        Stack<double> numbers = new Stack<double>();
-        Stack<char> operators = new Stack<char>();
+
+        Stack<Stack<double>> numberStack = new Stack<Stack<double>>();
+
+        Stack<Stack<char>> operatorStack = new Stack<Stack<char>>();
+
+        Stack<double> numbers;
+        Stack<char> operators;
+
+        
 
         public MainWindow()
         {
+            initializeStack();
             InitializeComponent();
+        }
+
+        private void initializeStack() {
+            Stack<double> firstStackNumbers = new Stack<double>();
+            Stack<char> firstStackOperators = new Stack<char>();
+            numbers = firstStackNumbers;
+            operators = firstStackOperators;
         }
 
         //Input number buttons
@@ -106,8 +121,12 @@ namespace WPFDemo
 
         private void operatorPush (char op) 
         {
-            numbers.Push(currNumb);
-            input = input + currNumb.ToString() + op;
+            if (lastPressed != ')'){
+                numbers.Push(currNumb);
+                input = input + currNumb.ToString() + op;
+            } else {
+                input = input + op;
+            }
             operators.Push(op);
             currNumb = 0;
             display.Text = "0";
@@ -151,46 +170,38 @@ namespace WPFDemo
             operatorPush('^');
         }
 
-        private void bracketCalc()
-        {
-
-        }
 
         private void addSubCalc()
         {
             System.Console.WriteLine("Doing addition");
             double num1;
             double num2;
-            System.Console.WriteLine(numbers.Peek());
-            if ((operators.Peek() == '*') || (operators.Peek() == '/') || (operators.Peek() == '%'))
-            {
-                num1 = numbers.Pop();
-                multDivModCalc();
-            } 
-            else if (operators.Peek() == '^')
-            {
-                num1 = numbers.Pop();
-                expCalc();
-            } 
-            else 
-            {
-                num1 = numbers.Pop();
-                
+            char currOp = operators.Pop();
+            num1 = numbers.Pop();
+            if (operators.Count() != 0) {
+                if ((operators.Peek() == '*') || (operators.Peek() == '/') || (operators.Peek() == '%'))
+                {
+                    multDivModCalc();
+                } 
+                else if (operators.Peek() == '^')
+                {
+                    expCalc();
+                } 
             }
-            System.Console.WriteLine(numbers.Peek());
+            
             num2 = numbers.Pop();
-            System.Console.WriteLine(num1);
-            System.Console.WriteLine(num2);
-
-            if (operators.Peek() == '+')
+            System.Console.WriteLine("Calculating " + num1 + " " + currOp + " " + num2);
+            
+            if (currOp == '+')
             {
                 numbers.Push(num1 + num2);
             }
             else 
             {
-                numbers.Push(num1 - num2);
+                numbers.Push(num2 - num1);
             }
-            operators.Pop();
+            System.Console.WriteLine("Result: " + numbers.Peek());
+            System.Console.WriteLine("Operator: " + operators.Count());
             
         }
 
@@ -199,28 +210,31 @@ namespace WPFDemo
             System.Console.WriteLine("Doing multiplication");
             double num1;
             double num2;
+            char currOp = operators.Pop();
+            num1 = numbers.Pop();
             if (operators.Peek() == '^')
             {
                 expCalc();
             }
+
+            num2 = numbers.Pop();
+            System.Console.WriteLine("Calculating " + num1 + " " + currOp + " " + num2);
+            
+            if (currOp == '+')
+            {
+                numbers.Push(num1 * num2);
+            }
+            else if (currOp == '/')
+            {
+                numbers.Push(num1 / num2);
+            }
             else 
             {
-                num1 = numbers.Pop();
-                num2 = numbers.Pop();
-                if (operators.Peek() == '*')
-                {
-                    numbers.Push(num1 * num2);
-                }
-                else if (operators.Peek() == '/')
-                {
-                    numbers.Push(num1 / num2);
-                }
-                else if  (operators.Peek() == '%')
-                {
-                    numbers.Push(num1 % num2);
-                }
+                numbers.Push(num1 % num2);
             }
-            operators.Pop();
+            System.Console.WriteLine("Result: " + numbers.Peek());
+            System.Console.WriteLine("Operator: " + operators.Count());
+
         }
 
         private void expCalc() 
@@ -228,7 +242,7 @@ namespace WPFDemo
             System.Console.WriteLine("Doing exponent");
             double num1 = numbers.Pop();
             double num2 = numbers.Pop();
-            numbers.Push(Math.Pow(num1, num2));
+            numbers.Push(Math.Pow(num2, num1));
             operators.Pop();
         }
 
@@ -238,19 +252,16 @@ namespace WPFDemo
         Output will be final calculation
         */
         {
-
+            if (lastPressed != ')') {
                 numbers.Push(currNumb);
                 input = input + currNumb.ToString();
                 history.Text = input;
-            
+            }
+
             while (operators.Count > 0)
             {
                 System.Console.WriteLine("Number of numbers on stack: " + numbers.Count());
-                System.Console.WriteLine("Number of operators on stack: " + operators.Count());
-                if (operators.Peek() == ')')
-                {
-                    bracketCalc(); 
-                }
+                System.Console.WriteLine("Number of operators on stack: " + operators.Count() + " Top: " + operators.Peek());
                 if ((operators.Peek() == '+') ||  (operators.Peek() == '-'))
                 {
                     addSubCalc();
@@ -259,7 +270,7 @@ namespace WPFDemo
                 {
                     multDivModCalc();
                 }
-                else
+                else if (operators.Peek() == '^')
                 {
                     expCalc();
                 }
@@ -271,13 +282,73 @@ namespace WPFDemo
 
         private void btnLB_Click(object sender, RoutedEventArgs e)
         {
-            operators.Push('(');
+            input = input + '(';
+            Stack<double> nextStackNumbers = new Stack<double>();
+            Stack<char> nextStackOperators = new Stack<char>();
+            numberStack.Push(nextStackNumbers);
+            operatorStack.Push(nextStackOperators);
+            numbers = nextStackNumbers;
+            operators = nextStackOperators;
+            currNumb = 0;
+            display.Text = "0";
+            history.Text = input;
+            lastPressed = '(';
+            System.Console.WriteLine("Size of stacks: numbers: " + numberStack.Count() + " operators: " + operatorStack.Count());
 
         }
 
         private void btnRB_Click(object sender, RoutedEventArgs e)
         {
-            operators.Push(')');
+            numbers.Push(currNumb);
+            input = input + currNumb.ToString();
+            input = input + ')';
+            history.Text = input;
+            
+            while (operators.Count > 0)
+            {
+                System.Console.WriteLine("Number of numbers on stack: " + numbers.Count());
+                System.Console.WriteLine("Number of operators on stack: " + operators.Count());
+                if ((operators.Peek() == '+') ||  (operators.Peek() == '-'))
+                {
+                    addSubCalc();
+                }
+                else if ((operators.Peek() == '*') || (operators.Peek() == '/') || (operators.Peek() == '%'))
+                {
+                    multDivModCalc();
+                }
+                else if (operators.Peek() == '^')
+                {
+                    expCalc();
+                }
+
+            }
+            double bracketResult = numbers.Pop();
+            numbers = numberStack.Pop();
+            numbers.Push(bracketResult);
+            operators = operatorStack.Pop();
+
+            currNumb = 0;
+            display.Text = "0";
+            history.Text = input;
+            lastPressed = ')';
+            System.Console.WriteLine("Size of stacks: numbers: " + numberStack.Count() + " operators: " + operatorStack.Count());
+            System.Console.WriteLine("Current number on stack " + numbers.Peek());
+        }
+
+        private void btnC_Click(object sender, RoutedEventArgs e) 
+        {
+            initializeStack();
+            currNumb = 0;
+            history.Text ="";
+            display.Text = "0";
+            input = "";
+            lastPressed = 'C';
+        }
+
+        private void btnCE_Click(object sender, RoutedEventArgs e)
+        {
+            currNumb = 0;
+            display.Text = "0";
         }
 
     }
