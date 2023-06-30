@@ -22,17 +22,17 @@ namespace WPFDemo
     public partial class MainWindow : Window
     {
 
-        double currNumb = 0;
+        decimal currNumb = 0;
         string input = "";
         char lastPressed = 'c'; //Used to check for illegal inputs (i.e. two operators in a row or an illegal combination)
         bool dec = false;
         int decPlace = 0;
 
-        Stack<Stack<double>> numberStack = new Stack<Stack<double>>();
+        Stack<Stack<decimal>> numberStack = new Stack<Stack<decimal>>();
 
         Stack<Stack<char>> operatorStack = new Stack<Stack<char>>();
 
-        Stack<double> numbers;
+        Stack<decimal> numbers;
         Stack<char> operators;
 
         
@@ -44,7 +44,7 @@ namespace WPFDemo
         }
 
         private void initializeStack() {
-            Stack<double> firstStackNumbers = new Stack<double>();
+            Stack<decimal> firstStackNumbers = new Stack<decimal>();
             Stack<char> firstStackOperators = new Stack<char>();
             numbers = firstStackNumbers;
             operators = firstStackOperators;
@@ -54,10 +54,16 @@ namespace WPFDemo
         //The numbers must grow with button inputs
         private void inputNumb(int number) 
         {
+            if (lastPressed == '=')
+            {
+                resetCalc();
+            }
             if (dec)
             {
                 decPlace++;
-                currNumb = currNumb + (number * Math.Pow(10, decPlace * -1));
+                double prec = (number * Math.Pow(10, decPlace * -1));
+                currNumb = currNumb + (decimal) prec;
+
             } 
             else 
             {
@@ -146,7 +152,7 @@ namespace WPFDemo
             currNumb = 0;
             display.Text = "0";
             history.Text = input;
-            lastPressed = op;
+            lastPressed = 'O';
         }
 
         private void btnPlus_Click(object sender, RoutedEventArgs e)
@@ -189,8 +195,8 @@ namespace WPFDemo
         private void addSubCalc()
         {
             System.Console.WriteLine("Doing addition");
-            double num1;
-            double num2;
+            decimal num1;
+            decimal num2;
             char currOp = operators.Pop();
             num1 = numbers.Pop();
             if (operators.Count() != 0) {
@@ -223,8 +229,8 @@ namespace WPFDemo
         private void multDivModCalc() 
         {
             System.Console.WriteLine("Doing multiplication");
-            double num1;
-            double num2;
+            decimal num1;
+            decimal num2;
             char currOp = operators.Pop();
             num1 = numbers.Pop();
             if (currOp == '^')
@@ -255,9 +261,10 @@ namespace WPFDemo
         private void expCalc() 
         {
             System.Console.WriteLine("Doing exponent");
-            double num1 = numbers.Pop();
-            double num2 = numbers.Pop();
-            numbers.Push(Math.Pow(num2, num1));
+            double num1 = (double)numbers.Pop();
+            double num2 = (double)numbers.Pop();
+            double exp = Math.Pow(num2, num1);
+            numbers.Push((decimal)exp);
             operators.Pop();
         }
 
@@ -299,7 +306,7 @@ namespace WPFDemo
         private void btnLB_Click(object sender, RoutedEventArgs e)
         {
             input = input + '(';
-            Stack<double> nextStackNumbers = new Stack<double>();
+            Stack<decimal> nextStackNumbers = new Stack<decimal>();
             Stack<char> nextStackOperators = new Stack<char>();
             numberStack.Push(nextStackNumbers);
             operatorStack.Push(nextStackOperators);
@@ -338,7 +345,7 @@ namespace WPFDemo
                 }
 
             }
-            double bracketResult = numbers.Pop();
+            decimal bracketResult = numbers.Pop();
             numbers = numberStack.Pop();
             numbers.Push(bracketResult);
             operators = operatorStack.Pop();
@@ -353,12 +360,21 @@ namespace WPFDemo
 
         private void btnC_Click(object sender, RoutedEventArgs e) 
         {
+            resetCalc();
+        }
+
+        private void resetCalc() {
             initializeStack();
             currNumb = 0;
             history.Text ="";
             display.Text = "0";
             input = "";
             lastPressed = 'C';
+            if (dec)
+            {
+                dec = false;
+                decPlace = 0;
+            }
         }
 
         private void btnCE_Click(object sender, RoutedEventArgs e)
@@ -375,6 +391,28 @@ namespace WPFDemo
             dec = true;
             input = input + '.';
             lastPressed = '.';
+        }
+
+        private void btnDel_Click(object sender, RoutedEventArgs e) 
+        {
+
+            if (lastPressed == 'N')
+            {
+                if (dec)
+                {
+
+                }
+                else
+                {
+                    currNumb = (currNumb - (currNumb % 10))/10;
+                    display.Text = currNumb.ToString();
+                }
+            }
+            if (lastPressed == 'O')
+            {
+                operators.Pop();
+                history.Text = history.Text.Substring(0, history.Text.Length-2);
+            }
         }
 
     }
