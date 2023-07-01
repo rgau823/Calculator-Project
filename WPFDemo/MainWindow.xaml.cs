@@ -68,8 +68,9 @@ namespace WPFDemo
             else 
             {
                 currNumb = (currNumb * 10) + number;
-                lastPressed = 'N';
+                
             }
+            lastPressed = 'N';
         }
         
         private void btn1_Click(object sender, RoutedEventArgs e)
@@ -142,16 +143,25 @@ namespace WPFDemo
                 dec = false;
                 decPlace = 0;
             }
-            if (lastPressed != ')'){
+            if (lastPressed != ')')
+            {
                 numbers.Push(currNumb);
                 input = input + currNumb.ToString() + op;
-            } else {
+            } 
+            else 
+            {
                 input = input + op;
             }
+
+            if (lastPressed == '=') 
+            {
+                input = currNumb.ToString() + op;
+            }
+
+            history.Text = input;
             operators.Push(op);
             currNumb = 0;
             display.Text = "0";
-            history.Text = input;
             lastPressed = 'O';
         }
 
@@ -389,7 +399,6 @@ namespace WPFDemo
         private void btnDecimal_Click(object sender, RoutedEventArgs e)
         {
             dec = true;
-            input = input + '.';
             lastPressed = '.';
         }
 
@@ -400,7 +409,14 @@ namespace WPFDemo
             {
                 if (dec)
                 {
-
+                    string currNumbString = currNumb.ToString();
+                    int index = currNumbString.Length - 1;
+                    int lastDigit = currNumbString[index] - '0';
+                    double lastDigitPlace = (lastDigit * Math.Pow(10, decPlace *-1));
+                    currNumb = currNumb - (decimal)lastDigitPlace;
+                    history.Text = currNumb.ToString();
+                    display.Text = currNumb.ToString();
+                    decPlace--;
                 }
                 else
                 {
